@@ -82,13 +82,22 @@ void change_wallpaper(pictures_t *pictures, char *pictures_path, pictures_t *pre
   system(change_command);
 }
 
+void free_pictures_memory(pictures_t *pictures) {
+  for (int i = 0; i < pictures->size; i++) {
+    free(pictures->elements[i]);
+  }
+
+  free(pictures->elements);
+}
+
 int main() {
   char buffer[128];
   char pictures_path[] = "~/Pictures/wallpapers/";
   pictures_t preloaded = preloaded_pictures();
 
-  if (strlen(preloaded.error) > 0) {
+  if (preloaded.error != NULL) {
     printf("%s \n", preloaded.error);
+    free_pictures_memory(&preloaded);
     return 1;
   }
 
@@ -116,10 +125,6 @@ int main() {
     sleep(60 * 30);
   }
 
-  for (int i = 0; i < pictures.size; i++) {
-    free(pictures.elements[i]);
-  }
-  free(pictures.elements);
-
+  free_pictures_memory(&pictures);
   return 0;
 }
