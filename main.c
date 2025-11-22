@@ -113,7 +113,7 @@ int main() {
 
   while (true) {
     change_wallpaper(&pictures, pictures_path, &preloaded);
-    sleep(30);
+    sleep(60 * 30);
   }
 
   for (int i = 0; i < pictures.size; i++) {
