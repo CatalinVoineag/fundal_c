@@ -147,9 +147,13 @@ int main(int argc, char **argv) {
 
   pclose(fp);
 
-  while (true) {
+  if (argc > 1 && minutes_argv > 0) {
+    while (true) {
+      change_wallpaper(&pictures, pictures_path, &preloaded);
+      sleep(60 * minutes_argv);
+    }
+  } else {
     change_wallpaper(&pictures, pictures_path, &preloaded);
-    sleep(60 * minutes_argv);
   }
 
   free_pictures_memory(&pictures);
