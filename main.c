@@ -19,7 +19,7 @@ void add_picture(pictures_t *pictures, char *value, int index) {
   }
   if (pictures->elements == NULL) { return; }
 
-  pictures->elements[index] = malloc(strlen(value)); 
+  pictures->elements[index] = malloc(strlen(value) + 1); 
   strcpy(pictures->elements[index], value);
   pictures->size++;
 }
@@ -90,10 +90,37 @@ void free_pictures_memory(pictures_t *pictures) {
   free(pictures->elements);
 }
 
-int main() {
+int handle_help(int argc, char **argv) {
+  if (argc > 1) {
+    if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "-help") == 0) {
+      printf("Usage: fundal [options...]\n");
+      printf("fundal -- changes the wallpaper to a random one \n");
+      printf("fundal 30 -- changes the wallpaper now and every 30 minutes \n");
+      return 1;
+    }
+  }
+  
+  return 0;
+}
+
+int main(int argc, char **argv) {
   char buffer[128];
   char pictures_path[] = "~/Pictures/wallpapers/";
   pictures_t preloaded = preloaded_pictures();
+  int minutes_argv; 
+
+  if (handle_help(argc, argv) == 1) {
+    return 1;
+  };
+
+  if (argc > 1) {
+    minutes_argv = atoi(argv[1]);
+
+    if (minutes_argv <= 0) {
+      printf("Pass a positive number if you want to set a timer \n");
+      return 1;
+    }
+  }
 
   if (preloaded.error != NULL) {
     printf("%s \n", preloaded.error);
@@ -122,7 +149,7 @@ int main() {
 
   while (true) {
     change_wallpaper(&pictures, pictures_path, &preloaded);
-    sleep(60 * 30);
+    sleep(60 * minutes_argv);
   }
 
   free_pictures_memory(&pictures);
